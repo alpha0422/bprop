@@ -25,6 +25,12 @@ class ActivationFunctionTest(unittest.TestCase):
    
         self.assertTrue(torch.autograd.gradcheck(tanh, (x,)))
 
+    def test_ReluFunction(self):
+        batch_size, hidden_size = 16, 27
+        relu = ReluFunction.apply
+        x = torch.randn([batch_size, hidden_size], device='cuda:0', dtype=torch.float64, requires_grad=True)
+   
+        self.assertTrue(torch.autograd.gradcheck(relu, (x,)))
 
 if __name__ == '__main__':
     script_path = os.path.dirname(os.path.realpath(__file__))
