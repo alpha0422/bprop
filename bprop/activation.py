@@ -28,3 +28,17 @@ class TanhFunction(torch.autograd.Function):
         grad_x = torch.mul(1 - torch.pow(y, 2), grad_y)
         return grad_x
 
+class ReluFunction(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, x):
+        mask = (x < 0)
+        y = torch.mul(x, mask.type_as(x))
+        ctx.save_for_backward(mask)
+        return y
+
+    @staticmethod
+    def backward(ctx, grad_y):
+        mask, = ctx.saved_tensors
+        grad_x = torch.mul(grad_y, mask.type_as(grad_y))
+        return grad_x
+
