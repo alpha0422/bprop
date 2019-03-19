@@ -72,3 +72,18 @@ class FullyConnectedFunctionImpl2(torch.autograd.Function):
 
         return grad_weight, grad_bias, grad_inputs
 
+class FullyConnectedFunctionImpl3(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, weight, bias, inputs):
+        outputs = (torch.matmul(weight, inputs.t()) + bias).t()
+        ctx.save_for_backward(inputs, weight)
+        return outputs
+
+    @staticmethod
+    def backward(ctx, grad_outputs):
+        inputs, weight = ctx.saved_tensors
+        grad_inputs = torch.matmul(weight.t(), grad_outputs.t()).t()
+        grad_weight = torch.matmul(grad_outputs.t(), inputs)
+        grad_bias = torch.sum(grad_outputs.t(), 1, keepdim=True)
+        return grad_weight, grad_bias, grad_inputs
+
