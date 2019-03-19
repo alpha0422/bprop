@@ -2,4 +2,5 @@
 
 from .loss import *
 from .activation import *
+from .fc import *
 
